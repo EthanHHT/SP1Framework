@@ -5,7 +5,7 @@
 int Player::getmood()
 {
 	srand((unsigned)time(0));
-	mood = 1 + (rand() % 5);
+	mood = 1 + (rand() % 4);  //rng 1-4
 	return mood;
 }
 
