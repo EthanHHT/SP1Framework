@@ -41,9 +41,12 @@ int main(void)
 		break;
 	}
 	
-	while (gameover == false)
+	cout << "Your mood is" << str_mood << endl;
+	
+	while (gameover == false) //main game loop
 	{
-		printmap(); //temp placeholder
+		
+	}		
 		
 		
 
