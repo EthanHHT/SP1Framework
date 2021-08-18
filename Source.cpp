@@ -1,14 +1,16 @@
 #include "movesets.h"
 #include "Player.h"
+#inlcude "Enemy.h"
+#include "SecurityGueard.h"
 #include <iostream>
 #include <string>
 using namespace std;
 
 int main(void) 
 {
+	bool gameover = false;
+	
 	movesets deck;
-
-
 
 	deck.setmove1();
 	deck.setmove2();
@@ -37,8 +39,14 @@ int main(void)
 	case 4:
 		str_mood = "Drunk";
 		break;
-	case 5:
-		str_mood = "High";
-		break;
 	}
+	
+	while (gameover == false)
+	{
+		printmap(); //temp placeholder
+		
+		
+
+	
+	
 }
