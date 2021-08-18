@@ -6,7 +6,8 @@
 #include <string>
 using namespace std;
 
-int main(void) 
+
+void init()  //everything to init before game starts
 {
 	bool gameover = false;
 	
@@ -42,6 +43,11 @@ int main(void)
 	}
 	
 	cout << "Your mood is" << str_mood << endl;
+}
+
+int main(void) 
+{
+	init();
 	
 	while (gameover == false) //main game loop
 	{
@@ -50,6 +56,6 @@ int main(void)
 		
 		
 
-	
+	return 0;
 	
 }
