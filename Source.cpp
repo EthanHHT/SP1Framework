@@ -11,18 +11,6 @@ void init()  //everything to init before game starts
 {
 	bool gameover = false;
 	
-	movesets deck;
-
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
-	
-	cout << "Move 1 : " << deck.getmove1() << '(' << deck.getmove1_type() << ')' << endl;
-	cout << "Move 2 : " << deck.getmove2() << '(' << deck.getmove2_type() << ')' << endl;
-	cout << "Move 3 : " << deck.getmove3() << '(' << deck.getmove3_type() << ')' << endl;
-	cout << "Move 4 : " << deck.getmove4() << '(' << deck.getmove4_type() << ')' << endl;
-	
 	Player player;
 	player.health = 100; //idk the health i guess
 	int Mood = player.getmood();
@@ -48,6 +36,18 @@ void init()  //everything to init before game starts
 int main(void) 
 {
 	init();
+	
+	movesets deck;
+
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
+	
+	cout << "Move 1 : " << deck.getmove1() << '(' << deck.getmove1_type() << ')' << endl;
+	cout << "Move 2 : " << deck.getmove2() << '(' << deck.getmove2_type() << ')' << endl;
+	cout << "Move 3 : " << deck.getmove3() << '(' << deck.getmove3_type() << ')' << endl;
+	cout << "Move 4 : " << deck.getmove4() << '(' << deck.getmove4_type() << ')' << endl;
 	
 	while (gameover == false) //main game loop
 	{
