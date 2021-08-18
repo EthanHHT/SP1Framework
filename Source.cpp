@@ -21,7 +21,7 @@ int main(void)
 	cout << "Move 4 : " << deck.getmove4() << '(' << deck.getmove4_type() << ')' << endl;
 	
 	Player player;
-	
+	player.health = 100; //idk the health i guess
 	int Mood = player.getmood();
 	switch (Mood)
 	{
