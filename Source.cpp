@@ -1,6 +1,6 @@
 #include "movesets.h"
 #include "Player.h"
-#inlcude "Enemy.h"
+#include "Enemy.h"
 #include "SecurityGueard.h"
 #include <iostream>
 #include <string>
