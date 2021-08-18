@@ -1,7 +1,7 @@
 #include "movesets.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "SecurityGueard.h"
+#include "SecurityGuard.h"
 #include <iostream>
 #include <string>
 using namespace std;
