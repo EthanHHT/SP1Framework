@@ -29,14 +29,7 @@ public:
 	void setmove4();
 
 	//getters
-	string getdeck(int a);
-	string getmove1();
-	string getmove2();
-	string getmove3();
-	string getmove4();
-	char getmove1_type();
-	char getmove2_type();
-	char getmove3_type();
-	char getmove4_type();
+	string getmove(int a);
+	char getmovetype(int a);
 };
 

@@ -1,11 +1,18 @@
 #pragma once
-class Enemy // Enemy parent class
+class Enemy
 {
+
 public:
-	int total_progress;  //% of progress completed for that enemy
-	int progress_done;  //progress completed during that turn
+	int total_progress;
+	int progress_done;
+	bool flammable_stat;
+	bool disturbed_stat;
+	Enemy();
+	~Enemy();
+	void set_prog();
 	int getProg();
-	float multiplier;  //multiplier based on type effectiveness
-	int type_effect;  //type effectiveness
-	float getmultiplier(int type_effect);
+	void prog_made(int a);
+	void set_flammable_stat(int a);
+	void set_disturbed_stat(int a);
 };
+

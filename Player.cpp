@@ -1,4 +1,3 @@
-  
 #include "Player.h"
 #include "cstdlib"
 #include <time.h>
@@ -12,6 +11,16 @@ int Player::getmood()
 
 int Player::gethealth()
 {
-	health -= dmg_taken;
 	return health;
+}
+
+void Player::set_dmg_taken(int a)
+{
+	dmg_taken = a;
+	health -= dmg_taken;
+}
+
+void Player::sethp()
+{
+	health = 100;
 }

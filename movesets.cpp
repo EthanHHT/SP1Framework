@@ -119,47 +119,44 @@ void movesets::setmove4()
 	}
 }
 
-char movesets::getmove1_type()
+char movesets::getmovetype(int a)
 {
-	return move1_type;
+	if (a == 1)
+	{
+		return move1_type;
+	}
+	else if (a == 2)
+	{
+		return move2_type;
+	}
+	else if (a == 3)
+	{
+		return move3_type;
+	}
+	else
+	{
+		return move4_type;
+	}
+	
 }
 
-char movesets::getmove2_type()
+string movesets::getmove(int a)
 {
-	return move2_type;
+	if (a == 1)
+	{
+		return move1;
+	}
+	else if (a == 2)
+	{
+		return move2;
+	}
+	else if (a == 3)
+	{
+		return move3;
+	}
+	else
+	{
+		return move4;
+	}
 }
 
-char movesets::getmove3_type()
-{
-	return move3_type;
-}
-
-char movesets::getmove4_type()
-{
-	return move4_type;
-}
-
-string movesets::getdeck(int a)
-{
-	return deck[a];
-}
-
-string movesets::getmove1()
-{
-	return move1;
-}
-
-string movesets::getmove2()
-{
-	return move2;
-}
-
-string movesets::getmove3()
-{
-	return move3;
-}
-
-string movesets::getmove4()
-{
-	return move4;
-}
