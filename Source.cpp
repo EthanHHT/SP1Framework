@@ -16,14 +16,17 @@ int main(void)
 	if (me.getmood() == 1) //agitated
 	{
 		cout << "Feeling agitated..." << endl;
+		cout << "Battle moves are boosted by 1.5X" << endl;
 	}
 	else if (me.getmood() == 2) //hungover
 	{
 		cout << "Feeling tired..." << endl;
+		cout << "Idle moves are boosted by 1.5X" << endl;
 	}
 	else if (me.getmood() == 3) //elated
 	{
 		cout << "Feeling elated!" << endl;
+		cout << "Converse moves are boosted by 1.5X" << endl;
 	}
 	int B_dmg;
 	int C_dmg;
@@ -198,7 +201,7 @@ int main(void)
 		}
 
 		
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Bus_captain.getProg() >= 100)
@@ -379,7 +382,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Auntie.getProg() >= 100)
@@ -560,7 +563,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Colleague.getProg() >= 100)
@@ -750,7 +753,7 @@ int main(void)
 			}
 
 
-			//system("CLS");
+			system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -919,7 +922,7 @@ int main(void)
 			}
 
 
-			//system("CLS");
+			system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -1026,7 +1029,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Cyclist.getProg() >= 100)
@@ -1038,6 +1041,7 @@ int main(void)
 	{
 		cout << "You lose" << endl;
 	}
+	
 	
 	me.set_dmg_taken(-15);
 	//battling the boss
@@ -1083,7 +1087,7 @@ int main(void)
 		{
 			if (move_use == i + 1)
 			{
-				if (deck.getmovetype(i + 1) != 'G')
+				if (deck.getmovetype(i + 1) != 'G')   //when move selected is not a guard move
 				{
 					cout << "You whacked the boss for giving you too much work." << endl;
 					cout << "The boss punched you back in retaliation." << endl;
@@ -1148,9 +1152,9 @@ int main(void)
 			}
 		}
 
-		if ((Boss.getProg() > 50) && heal_valid == true)
+		if ((Boss.getProg() >= 50) && heal_valid == true)
 		{
-			cout << "Boss progress is getting too high, manager gave him an energy drink." << endl;
+			cout << "Boss is getting tired. The manager gave him an energy drink." << endl;
 			Boss.prog_made(-10);
 			heal_valid = false;
 		}
