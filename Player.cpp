@@ -18,6 +18,10 @@ void Player::set_dmg_taken(int a)
 {
 	dmg_taken = a;
 	health -= dmg_taken;
+	if (health > 100)
+	{
+		health = 100;
+	}
 }
 
 void Player::sethp()
