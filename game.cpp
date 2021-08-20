@@ -19,9 +19,11 @@ std::string effective = "";
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_MAP; // initial state
+enemyTypes enemy = E_AUNTIE;
+std::string guardMood = "angry";
 
 // Console object
-Console g_Console(120, 40, "Game");
+Console g_Console(120, 40, "A Typical Life of a Madman");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -305,7 +307,7 @@ void render()
         break;
     }
     renderFramerate();      // renders debug information, frame rate, elapsed time, etc
-    //renderInputEvents();    // renders status of input events
+    renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
 }
 
@@ -326,19 +328,6 @@ void renderMap()
     renderCharacter();
     renderEnemy();
 }
-//void renderSplashScreen()  // renders the splash screen
-//{
-//    COORD c = g_Console.getConsoleSize();
-//    c.Y /= 3;
-//    c.X = c.X / 2 - 9;
-//    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
-//    c.Y += 1;
-//    c.X = g_Console.getConsoleSize().X / 2 - 20;
-//    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
-//    c.Y += 1;
-//    c.X = g_Console.getConsoleSize().X / 2 - 9;
-//    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
-//}
 
 void renderGame()
 {
@@ -408,8 +397,100 @@ void renderBar(int xCoord, int yCoord, int percent, WORD color)
     c.X += 1; g_Console.writeToBuffer(c, "]", color);
 }
 
+void renderPlayerASCII()
+{
+    COORD c; c.X = 0; c.Y = 10;
+    std::string player[15] = {
+        "         _____|`'",
+        "      ,`         `\\",
+        "     |            |",
+        "   .-`        ,.._'",
+        "    ^|/--\\.-=/  0|",
+        "      |  .]     -/",
+        "      _;`-==,---'",
+        "    _/   \\  '/,=-,",
+        "  /          {    )",
+        " /          {____/     |",
+        "/          /   /  _,-']",
+        "           (.  '``_;='`",
+        "             `~=~'`",
+        "               /",
+        "               |"
+    };
+    for (int i = 0; i < 15; ++i)
+    {
+        g_Console.writeToBuffer(c, player[i], 0x0F);
+        c.Y += 1;
+    }
+}
+
+void renderEnemyASCII()
+{
+    std::string row[16];
+    COORD c; c.X = 90; c.Y = 0;
+    switch (enemy)
+    {
+    case E_BUSCAPTAIN:
+        row[0] = "                  ______"; row[1] = "               __/______)"; row[2] = "                `|`o  o`|`"; row[3] = "                 [  =   ]";
+        row[4] = "             ____/|   |\\___"; row[5] = "           _/      '   /   /"; row[6] = "          _/    ~  |  / = /|"; row[7] = "        _/ ,--~--, | /   /|";
+        row[8] = "        =,'   |   '=/___/ |"; row[9] = "         :  -=0=-  :-/`` | "; row[10] = "         |:   |   /     _/"; row[11] = "         _ '--=--'  ___/|";
+        row[12] = "         / ~  _Y _/   _/ "; row[13] = "        /   /    /    /"; row[14] = "       |   |    |    /"; row[15] = "       |   |    |   |";
+        break;
+
+    case E_AUNTIE:
+        row[0] = "        .---."; row[1] = "       (_---_)"; row[2] = "      (_/6 6\\_)"; row[3] = "       (  v  )";
+        row[4] = "        `\\ /`"; row[5] = "     .-'': ;``-."; row[6] = "    /   \\ Y /   \\"; row[7] = "   /     \\ \\___  \\";
+        row[8] = "  :   .-'XXX`-.`\\_;"; row[9] = "   `.__.-XXX-.__.'"; row[10] = "    /   / /\\ \\  \\"; row[11] = "   /XXXXXXXXXXXXX\\";
+        row[12] = "  /XXXXXXXXXXXXXXX\\"; row[13] = " /                 \\"; row[14] = "/                   \\"; row[15] = "`--...___   ___...--'";
+        break;
+
+    case E_COLLEAGUE:
+        row[0] = ""; row[1] = ""; row[2] = ""; row[3] = "";
+        row[4] = ""; row[5] = ""; row[6] = ""; row[7] = "";
+        row[8] = ""; row[9] = ""; row[10] = ""; row[11] = "";
+        row[12] = ""; row[13] = ""; row[14] = ""; row[15] = "";
+        break;
+
+    case E_CYCLIST:
+        row[0] = ""; row[1] = ""; row[2] = ""; row[3] = "           _-===_";
+        row[4] = "          ( /   /)"; row[5] = "           {*_ * }"; row[6] = "             [ ]    y"; row[7] = "             /  \\  //";
+        row[8] = "         `;==[=  ]//"; row[9] = "        \\____[ = ]"; row[10] = "            ~\\-+===\\'  _.._"; row[11] = "      _.._   /|   \\ \\,' /  ',.";
+        row[12] = "    ,' \\  ',/`|   _|;_--o =- ;"; row[13] = "   ; -=o----;-=-=/ | ', /  ,'"; row[14] = "    ', \\   ,' |     \\_ '~- '"; row[15] = "      '~- '   _/";
+        break;
+
+    case E_SECURITYGUARD:
+        row[0] = "         ________    "; row[1] = "       __\\______/"; 
+        if (guardMood == "happy")
+        { 
+            row[2] = "          [^--^]"; row[3] = "         \\[ v  ]/`"; 
+        }
+        else
+        { 
+            row[2] = "          [p--p]"; row[3] = "         \\[ ^  ]/`";
+        }
+        row[4] = "       ,.~~~\\/~~~.,"; row[5] = "     :'    \\  / _  ':"; row[6] = "     ||     \\/  U  ||"; row[7] = "     \\\\            //";
+        row[8] = "      \\\\_        _//"; row[9] = "        \\\\__==__//"; row[10] = "        [   Y    ]"; row[11] = "        |   |    |";
+        row[12] = "        | ~ | ~  |"; row[13] = "        |   |    |"; row[14] = "        |        |"; row[15] = "        /___ /___|";
+        break;
+
+    case E_BOSS:
+        row[0] = "         _~===~_"; row[1] = "  /``|   |////]|"; row[2] = "  :  :,  | L   |"; row[3] = "   `:  '~~\\  /~~,.__";
+        row[4] = "     `~~_  ``__     \\"; row[5] = "        ( . (.`|`~   ]"; row[6] = "        [  [   ] `:  )"; row[7] = "        [  [   / /  /";
+        row[8] = "       ,\\______] `~~`"; row[9] = "       /   Y    /"; row[10] = "      /   ][   /"; row[11] = "     [ ~ ] [ ~ \\";
+        row[12] = "     \\   ]  [   \\"; row[13] = "      \\   \\  \\   \\"; row[14] = "       \\___\\  \\___\\"; row[15] = "       /___|  /___|";
+        break;
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        g_Console.writeToBuffer(c, row[i], 0x0F);
+        c.Y += 1;
+    }
+}
+
 void renderUI()
 {
+    renderPlayerASCII();
+    renderEnemyASCII();
     drawBox(0, 25, 50, 14, 0x78);
     //action buttons
     drawBox(51, 25, 34, 7, 0x4F);
@@ -436,7 +517,7 @@ void renderUI()
     c.X = 5; c.Y = 35;
     g_Console.writeToBuffer(c, "Your HP:", 0x78);
     c.Y += 2; g_Console.writeToBuffer(c, "Enemy Progress:", 0x78);
-}
+}   
 
 void renderCharacter()
 {
@@ -515,80 +596,80 @@ void inputEvents()
 }
 
 // this is an example of how you would use the input events
-//void renderInputEvents()
-//{
-//    // keyboard events
-//    COORD startPos = {50, 2};
-//    std::ostringstream ss;
-//    std::string key;
-//    for (int i = 0; i < K_COUNT; ++i)
-//    {
-//        ss.str("");
-//        switch (i)
-//        {
-//        case K_UP: key = "UP";
-//            break;
-//        case K_DOWN: key = "DOWN";
-//            break;
-//        case K_LEFT: key = "LEFT";
-//            break;
-//        case K_RIGHT: key = "RIGHT";
-//            break;
-//        case K_SPACE: key = "SPACE";
-//            break;
-//        default: continue;
-//        }
-//        if (g_skKeyEvent[i].keyDown)
-//            ss << key << " pressed";
-//        else if (g_skKeyEvent[i].keyReleased)
-//            ss << key << " released";
-//        else
-//            ss << key << " not pressed";
-//
-//        COORD c = { startPos.X, startPos.Y + i };
-//        g_Console.writeToBuffer(c, ss.str(), 0x17);
-//    }
-//
-//    // mouse events    
-//    ss.str("");
-//    ss << "Mouse position (" << g_mouseEvent.mousePosition.X << ", " << g_mouseEvent.mousePosition.Y << ")";
-//    g_Console.writeToBuffer(g_mouseEvent.mousePosition, ss.str(), 0x59);
-//    ss.str("");
-//    switch (g_mouseEvent.eventFlags)
-//    {
-//    case 0:
-//        if (g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED)
-//        {
-//            ss.str("Left Button Pressed");
-//            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
-//        }
-//        else if (g_mouseEvent.buttonState == RIGHTMOST_BUTTON_PRESSED)
-//        {
-//            ss.str("Right Button Pressed");
-//            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
-//        }
-//        else
-//        {
-//            ss.str("Some Button Pressed");
-//            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 3, ss.str(), 0x59);
-//        }
-//        break;
-//    case DOUBLE_CLICK:
-//        ss.str("Double Clicked");
-//        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 4, ss.str(), 0x59);
-//        break;        
-//    case MOUSE_WHEELED:
-//        if (g_mouseEvent.buttonState & 0xFF000000)
-//            ss.str("Mouse wheeled down");
-//        else
-//            ss.str("Mouse wheeled up");
-//        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 5, ss.str(), 0x59);
-//        break;
-//    default:        
-//        break;
-//    }
-//    
-//}
+void renderInputEvents()
+{
+    // keyboard events
+    COORD startPos = {50, 2};
+    std::ostringstream ss;
+    /*std::string key;
+    for (int i = 0; i < K_COUNT; ++i)
+    {
+        ss.str("");
+        switch (i)
+        {
+        case K_UP: key = "UP";
+            break;
+        case K_DOWN: key = "DOWN";
+            break;
+        case K_LEFT: key = "LEFT";
+            break;
+        case K_RIGHT: key = "RIGHT";
+            break;
+        case K_SPACE: key = "SPACE";
+            break;
+        default: continue;
+        }
+        if (g_skKeyEvent[i].keyDown)
+            ss << key << " pressed";
+        else if (g_skKeyEvent[i].keyReleased)
+            ss << key << " released";
+        else
+            ss << key << " not pressed";
+
+        COORD c = { startPos.X, startPos.Y + i };
+        g_Console.writeToBuffer(c, ss.str(), 0x17);
+    }*/
+
+    // mouse events    
+    ss.str("");
+    ss << "Mouse position (" << g_mouseEvent.mousePosition.X << ", " << g_mouseEvent.mousePosition.Y << ")";
+    g_Console.writeToBuffer(g_mouseEvent.mousePosition, ss.str(), 0x59);
+    ss.str("");
+    switch (g_mouseEvent.eventFlags)
+    {
+    case 0:
+        if (g_mouseEvent.buttonState == FROM_LEFT_1ST_BUTTON_PRESSED)
+        {
+            ss.str("Left Button Pressed");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 1, ss.str(), 0x59);
+        }
+        else if (g_mouseEvent.buttonState == RIGHTMOST_BUTTON_PRESSED)
+        {
+            ss.str("Right Button Pressed");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 2, ss.str(), 0x59);
+        }
+        else
+        {
+            ss.str("Some Button Pressed");
+            g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 3, ss.str(), 0x59);
+        }
+        break;
+    case DOUBLE_CLICK:
+        ss.str("Double Clicked");
+        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 4, ss.str(), 0x59);
+        break;        
+    case MOUSE_WHEELED:
+        if (g_mouseEvent.buttonState & 0xFF000000)
+            ss.str("Mouse wheeled down");
+        else
+            ss.str("Mouse wheeled up");
+        g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 5, ss.str(), 0x59);
+        break;
+    default:        
+        break;
+    }
+    
+}
 
 
 

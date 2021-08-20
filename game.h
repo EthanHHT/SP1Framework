@@ -48,6 +48,16 @@ enum EGAMESTATES
     S_COUNT
 };
 
+enum enemyTypes
+{
+    E_BUSCAPTAIN,
+    E_AUNTIE,
+    E_COLLEAGUE,
+    E_CYCLIST,
+    E_SECURITYGUARD,
+    E_BOSS
+};
+
 // struct for the game character
 struct SGameChar
 {
@@ -72,12 +82,14 @@ void clearScreen();         // clears the current screen and draw from scratch
 void renderGame();          // renders the game stuff
 void drawBox(int xCoord, int yCoord, int length, int height, WORD color);        // renders the boxes for map
 void renderBar(int xCoord, int yCoord, int percent, WORD color);
+void renderPlayerASCII();
+void renderEnemyASCII();
 void renderUI();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderEnemy();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-//void renderInputEvents();   // renders the status of input events
+void renderInputEvents();   // renders the status of input events
 void renderMoveInput(std::string move, std::string effective);
 void inputEvents();
 
