@@ -198,7 +198,7 @@ int main(void)
 		}
 
 		
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Bus_captain.getProg() >= 100)
@@ -379,7 +379,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Auntie.getProg() >= 100)
@@ -560,7 +560,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Colleague.getProg() >= 100)
@@ -750,7 +750,7 @@ int main(void)
 			}
 
 
-			//system("CLS");
+			system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -919,7 +919,7 @@ int main(void)
 			}
 
 
-			//system("CLS");
+			system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -1026,7 +1026,7 @@ int main(void)
 		}
 
 
-		//system("CLS");
+		system("CLS");
 	}
 
 	if (Cyclist.getProg() >= 100)
@@ -1152,6 +1152,7 @@ int main(void)
 				}
 
 			}
+			system("CLS");
 		}
 
 		if ((Boss.getProg() > 50) && heal_valid == true)
