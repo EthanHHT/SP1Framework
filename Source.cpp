@@ -41,11 +41,6 @@ int main(void)
 	int move_use;
 	
 	//fighting bus captain
-	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
 	B_dmg = -10;
 	C_dmg = 30;
 	I_dmg = 10;
@@ -64,6 +59,11 @@ int main(void)
 
 	while (Bus_captain.getProg() < 100 && me.gethealth() > 0)
 	{
+		//randomize the movesets
+		deck.setmove1();
+		deck.setmove2();
+		deck.setmove3();
+		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the bus captain is : " << Bus_captain.getProg() << '%' << endl;
 
@@ -214,11 +214,6 @@ int main(void)
 
 	me.set_dmg_taken(-15);
 	//battling the auntie
-	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
 	B_dmg = -10;
 	C_dmg = 30;
 	I_dmg = 10;
@@ -237,6 +232,11 @@ int main(void)
 
 	while (Auntie.getProg() < 100 && me.gethealth() > 0)
 	{
+		//randomize the movesets
+		deck.setmove1();
+		deck.setmove2();
+		deck.setmove3();
+		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the auntie is : " << Auntie.getProg() << '%' << endl;
 
@@ -395,11 +395,6 @@ int main(void)
 	}
 
 	//battling the colleague
-	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
 	B_dmg = -10;
 	C_dmg = 10;
 	I_dmg = 30;
@@ -419,6 +414,11 @@ int main(void)
 
 	while (Colleague.getProg() < 100 && me.gethealth() > 0)
 	{
+		//randomize the movesets
+		deck.setmove1();
+		deck.setmove2();
+		deck.setmove3();
+		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Colleague is : " << Colleague.getProg() << '%' << endl;
 
@@ -577,12 +577,6 @@ int main(void)
 
 	me.set_dmg_taken(-15);
 	//battling the security guard
-	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
-	
 	if (SG.getMood() == 1) // angry
 	{
 		B_dmg = 30;
@@ -602,6 +596,11 @@ int main(void)
 		}
 		while (SG.getProg() < 100 && me.gethealth() > 0)
 		{
+			//randomize the movesets
+			deck.setmove1();
+			deck.setmove2();
+			deck.setmove3();
+			deck.setmove4();
 			cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 			cout << "Progress made so far on the Security Guard is : " << SG.getProg() << '%' << endl;
 			cout << "The Security Guard is angry." << endl;
@@ -784,6 +783,11 @@ int main(void)
 
 		while (SG.getProg() < 100 && me.gethealth() > 0)
 		{
+			//randomize the movesets
+			deck.setmove1();
+			deck.setmove2();
+			deck.setmove3();
+			deck.setmove4();	
 			cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 			cout << "Progress made so far on the Security Guard is : " << SG.getProg() << '%' << endl;
 			cout << "The Security Guard is happy." << endl;
@@ -937,14 +941,15 @@ int main(void)
 	me.set_dmg_taken(-15);
 	//battling the cyclist
 	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
-	
+
 
 	while (Cyclist.getProg() < 100 && me.gethealth() > 0)
 	{
+		//randomize the movesets
+		deck.setmove1();
+		deck.setmove2();
+		deck.setmove3();
+		deck.setmove4();	
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Cyclist is : " << Cyclist.getProg() << '%' << endl;
 
@@ -1041,11 +1046,6 @@ int main(void)
 	
 	me.set_dmg_taken(-15);
 	//battling the boss
-	//randomize the movesets
-	deck.setmove1();
-	deck.setmove2();
-	deck.setmove3();
-	deck.setmove4();
 	B_dmg = 10;
 	C_dmg = 10;
 	I_dmg = 10;
@@ -1065,6 +1065,11 @@ int main(void)
 
 	while (Boss.getProg() < 100 && me.gethealth() > 0)
 	{
+		//randomize the movesets
+		deck.setmove1();
+		deck.setmove2();
+		deck.setmove3();
+		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Boss is : " << Boss.getProg() << '%' << endl;
 
