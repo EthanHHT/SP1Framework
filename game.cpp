@@ -3,6 +3,7 @@
 //
 #include "game.h"
 #include "Framework\console.h"
+#include <string>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -15,12 +16,14 @@ int hp = 100;
 int prog = 0;
 std::string move = "";
 std::string effective = "";
+std::string flavourText = "";
 
 // Game specific variables here
 SGameChar   g_sChar;
-EGAMESTATES g_eGameState = S_MAP; // initial state
-enemyTypes enemy = E_AUNTIE;
-std::string guardMood = "angry";
+EGAMESTATES g_eGameState = S_CUTSCENE; // initial state
+enemyTypes enemy = E_BUSCAPTAIN; //TEMP change current type of enemy to display here
+PLAYERMOODS mood = M_ELATED;
+std::string guardMood = "angry"; //TEMP change current mood of guard. "happy" or "angry"
 
 // Console object
 Console g_Console(120, 40, "A Typical Life of a Madman");
@@ -38,8 +41,7 @@ void init( void )
     g_dElapsedTime = 0.0;    
 
     // sets the initial state for the game
-    g_eGameState = S_MAP;
-
+    g_eGameState = S_CUTSCENE;
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
@@ -104,6 +106,8 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
 {    
     switch (g_eGameState)
     {
+    case S_CUTSCENE: gameplayKBHandler(keyboardEvent); //handle gameplay keyboard event
+        break;
     case S_MAP: gameplayKBHandler(keyboardEvent); //handle gameplay keyboard event
         break;
     case S_BATTLE: gameplayKBHandler(keyboardEvent); // handle gameplay keyboard event 
@@ -131,6 +135,8 @@ void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent) //NOTE TO SELF REMOVE TH
 {    
     switch (g_eGameState)
     {
+    case S_CUTSCENE: gameplayMouseHandler(mouseEvent);
+        break;
     case S_MAP: // don't handle anything for the splash screen
         break;
     case S_BATTLE: gameplayMouseHandler(mouseEvent); // handle gameplay mouse event
@@ -214,9 +220,11 @@ void update(double dt)
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
 
-    switch (g_eGameState)
+    switch (g_eGameState)   
     {
-        case S_MAP : updateMap(); // game logic for the map
+        case S_CUTSCENE: updateCutscene();
+            break;
+        case S_MAP: updateMap(); // game logic for the map
             break;
         case S_BATTLE: updateGame(); // gameplay logic when we are in the game
             break;
@@ -229,6 +237,32 @@ void update(double dt)
 //    if (g_dElapsedTime > 0.0) // wait for 3 seconds to switch to game mode, else do nothing
 //        g_eGameState = S_BATTLE;
 //}
+void updateCutscene()
+{
+    //std::string str = "Hello world...test test..";
+    //std::string newstr;
+    //float currentTime; //0.000s
+    //for (size_t i = 0; i < str.size(); ++i)
+    //{
+    //    currentTime = g_dElapsedTime;
+    //    if (g_dElapsedTime > currentTime + 0.5)
+    //    {
+    //        newstr = str[i];
+    //        flavourText.append(newstr);
+    //    }
+    //    else if (g_dElapsedTime > 3.0)
+    //    {
+    //        std::string time = std::to_string(g_dElapsedTime);
+    //        flavourText.append(time);
+    //    }
+    //}
+
+    if (g_skKeyEvent[K_SPACE].keyReleased)
+    {
+        g_eGameState = S_MAP;
+    }
+}
+
 
 void updateMap()
 {
@@ -301,6 +335,8 @@ void render()
     clearScreen();      // clears the current screen and draw from scratch 
     switch (g_eGameState)
     {
+    case S_CUTSCENE: renderCutscene();
+        break;
     case S_MAP: renderMap();
         break;
     case S_BATTLE: renderGame();
@@ -323,8 +359,85 @@ void renderToScreen()
     g_Console.flushBufferToConsole();
 }
 
+void renderCutscene()
+{
+    renderCutsceneBG();
+    renderText();
+}
+
+void renderText()
+{
+    COORD c; c.X = 35; c.Y = 20;
+    std::string text[7];
+    switch (mood)
+    {
+    case M_AGITATED:
+        text[0] = "Fresh from being dumped the previous night by";
+        text[1] = "your girlfriend of 5 and a half weeks, you wake up";
+        text[2] = "in an irritable mood which is only amplified by";
+        text[3] = "your realisation that you are going to be LATE";
+        text[4] = "if you don't leave your house soon.";
+        break;
+
+    case M_HUNGOVER:
+        text[0] = "'Where... am I?' are the first thoughts in your mind";
+        text[1] = "as you start to realise your body is spread all over";
+        text[2] = "the ground right in front of your doorstep...";
+        text[3] = "You recall last night's heavy drinking session with";
+        text[4] = "your colleagues and you try your best to drag";
+        text[5] = "your hungover body to work to prevent yourself";
+        text[6] = "from being LATE once again.";
+        break;
+
+    case M_ELATED:
+        text[0] = "You wake up feeling f*cking amazing.";
+        text[1] = "You wonder why?";
+        text[2] = "Oh yeah... Today is payday.";
+        text[3] = "Even the fact that you are probably going to be";
+        text[4] = "LATE for work today can't spoil your mood.";
+        break;
+    };
+    for (int i = 0; i < 7; ++i)
+    {
+        g_Console.writeToBuffer(c, text[i], 0x1F);
+        c.Y += 1;
+    };
+    //g_Console.writeToBuffer(c, flavourText, 0x1F);
+}
+
+void renderCutsceneBG()
+{
+    COORD c; c.X = 0; c.Y = 0;
+    std::string background[] = {
+        "o                     __...__     *",
+        "              *   .--'    __.=-.             o",
+        "     |          ./     .-'",
+        "    -O-        /      /",
+        "     |        /    '' / *",
+        "             |     (@)",
+        "            |        \\                         .",
+        "            |         \\",
+        " *          |       ___\\                  |",
+        "             |  .   /  `                 -O-",
+        "              \\  `~~\\                     |",
+        "         o     \\     \\            *",
+        "                `\\    `-.__           .",
+        "    .             `--._    `--'",
+        "                       `---~~`                *",
+        "            *                   o"
+    };
+    for (int i = 0; i < 16; ++i)
+    {
+        g_Console.writeToBuffer(c, background[i], 0x0F);
+        c.Y += 1;
+    }
+    c.X = 35; c.Y = 30;
+    g_Console.writeToBuffer(c, " Press <Space> to continue. ", 0x1B);
+}
+
 void renderMap()
 {
+    renderMapBG();
     renderCharacter();
     renderEnemy();
 }
@@ -519,15 +632,81 @@ void renderUI()
     c.Y += 2; g_Console.writeToBuffer(c, "Enemy Progress:", 0x78);
 }   
 
+void renderMapBG()
+{
+    char map[9][30];
+    WORD colours[9][30];
+    COORD c; c.X = 75; c.Y = 11;
+    switch (enemy)
+    {
+    case E_BUSCAPTAIN:
+        map[0][0] = char(213); 
+        for (int i = 1; i < 19; ++i)
+            map[0][i] = char(176);
+        map[0][18] = char(201); map[0][19] = char(205); map[0][20] = char(205); map[0][21] = char(205); map[0][22] = char(205); map[0][23] = char(205); map[0][24] = char(206); map[0][25] = char(176); map[0][26] = char(176); map[0][27] = char(176); map[0][28] = char(176); map[0][29] = char(187);
+        
+        for (int i = 0; i < 18; ++i)
+            map[1][i] = char(176);
+        map[1][18] = char(186); map[1][19] = char(255); map[1][20] = char(255); map[1][21] = char(255); map[1][22] = char(255); map[1][23] = char(255); map[1][24] = char(186); map[1][25] = char(176); map[1][26] = char(176); map[1][27] = char(176); map[1][28] = char(176); map[1][29] = char(176);
+        
+        for (int i = 0; i < 18; ++i)
+            map[2][i] = char(176);
+        map[2][18] = char(200); map[2][19] = char(205); map[2][20] = char(205); map[2][21] = char(205); map[2][22] = char(205); map[2][23] = char(205); map[2][24] = char(206); map[2][25] = char(176); map[2][26] = char(176); map[2][27] = char(176); map[2][28] = char(176); map[2][29] = char(176);
+        
+        map[3][0] = char(211);
+        for (int i = 1; i < 18; ++i)
+            map[3][i] = char(176);
+        map[3][18] = char(179); 
+        for (int i = 19; i < 26; ++i)
+            map[3][i] = '_'; 
+        map[3][26] = char(179); map[3][27] = char(176); map[3][28] = char(176); map[3][29] = char(188);
+       
+        for (int i = 0; i < 30; ++i)
+            map[4][i] = char(219);
+       
+        map[5][0] = char(219); map[5][1] = char(219); map[5][2] = char(219); map[5][3] = char(8); map[5][4] = char(8); map[5][5] = char(8); map[5][6] = char(219); map[5][7] = char(219); map[5][8] = char(8); map[5][9] = char(8); map[5][10] = char(8);
+        for (int i = 11; i < 19; ++i)
+            map[5][i] = char(219); 
+        map[5][19] = char(8); map[5][20] = char(8); map[5][21] = char(8); map[5][22] = char(219); map[5][23] = char(219); map[5][24] = char(8); map[5][25] = char(8); map[5][26] = char(8); map[5][27] = char(219); map[5][28] = char(219); map[5][29] = char(219);
+        
+        map[6][0] = char(219); map[6][1] = char(219); map[6][2] = char(219); map[6][3] = char(209); map[6][4] = char(205);  map[6][5] = char(205);  map[6][6] = char(205);  map[6][7] = char(205);  map[6][8] = char(205); map[6][9] = char(209); map[6][10] = char(219);  map[6][11] = char(201);
+        for (int i = 12; i < 18; ++i)
+            map[6][i] = '-';
+        map[6][18] = char(187); map[6][19] = char(219); map[6][20] = char(209); map[6][21] = char(205);  map[6][22] = char(205);  map[6][23] = char(205);  map[6][24] = char(205);  map[6][25] = char(205); map[6][26] = char(209); map[6][27] = char(219); map[6][28] = char(219); map[6][29] = char(219);
+
+        for (int i = 0; i < 4; ++i)
+            map[7][i] = char(219);
+        map[7][4] = char(177); map[7][5] = char(177); map[7][6] = char(186);  map[7][7] = char(177); map[7][8] = char(177); map[7][9] = char(219); map[7][10] = char(219); map[7][11] = char(186); map[7][12] = char(9);
+        for (int i = 13; i < 18; ++i)
+            map[7][i] = char(255);
+        map[7][18] = char(186); map[7][19] = char(219); map[7][20] = char(219); map[7][21] = char(177); map[7][22] = char(177); map[7][23] = char(186);  map[7][24] = char(177); map[7][25] = char(177);
+        for (int i = 26; i < 30; ++i)
+            map[7][i] = char(219);
+
+        for (int i = 0; i < 11; ++i)
+            map[8][i] = char(219);
+        map[8][11] = char(186);
+        for (int i = 12; i < 18; ++i)
+            map[8][i] = char(255);
+        map[8][18] = char(186);
+        for (int i = 19; i < 30; ++i)
+            map[8][i] = char(219);
+    }
+    for (int i = 0; i < 9; ++i)
+    {
+        for (int j = 0; j < 30; ++j)
+        {
+            g_Console.writeToBuffer(c, map[i][j], 0x5C);
+            c.X += 1;
+        }   
+        c.X = 75;
+        c.Y += 1;
+    }
+}
+
 void renderCharacter()
 {
-    // Draw the location of the character
-    WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
-    {
-        charColor = 0x0A;
-    }
-    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0A);
 }
 
 void renderEnemy()

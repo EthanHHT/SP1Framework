@@ -43,9 +43,16 @@ enum EKEYS
 // Enumeration for the different screen states
 enum EGAMESTATES
 {
+    S_CUTSCENE,
     S_MAP,
     S_BATTLE,
-    S_COUNT
+};
+
+enum PLAYERMOODS
+{
+    M_AGITATED,
+    M_HUNGOVER,
+    M_ELATED
 };
 
 enum enemyTypes
@@ -71,7 +78,11 @@ void update      ( double dt ); // update the game and the state of the game
 void render      ( void );      // renders the current state of the game to the console
 void shutdown    ( void );      // do clean up, free memory
 
-void splashScreenWait();    // waits for time to pass in splash screen
+//void splashScreenWait();    // waits for time to pass in splash screen
+void renderCutscene();
+void updateCutscene();
+void renderCutsceneBG();
+void renderText();
 void renderMap();
 void updateMap();
 void updateGame();          // gameplay logic
@@ -85,6 +96,7 @@ void renderBar(int xCoord, int yCoord, int percent, WORD color);
 void renderPlayerASCII();
 void renderEnemyASCII();
 void renderUI();           // renders the map to the buffer first
+void renderMapBG();
 void renderCharacter();     // renders the character into the buffer
 void renderEnemy();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
