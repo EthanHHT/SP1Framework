@@ -19,6 +19,7 @@ std::string effective = "";
 std::string flavourText = "";
 int cameraMinX, cameraMinY, cameraMaxX, cameraMaxY;
 char map[70][200];
+COORD consoleEPos; //position of enemy relative to console
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -37,15 +38,16 @@ Console g_Console(120, 40, "A Typical Life of a Madman");
 // Input    : void
 // Output   : void
 //--------------------------------------------------------------
-void init( void )
+void init(void)
 {
     // Set precision for floating point output
-    g_dElapsedTime = 0.0;    
+    g_dElapsedTime = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_CUTSCENE;
-    g_sChar.m_cLocation.X = 20;//g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = 20;//g_Console.getConsoleSize().Y / 2;
+    //BUS CAPTAIN START POS IS (23, 38)
+    g_sChar.m_cLocation.X = 100;
+    g_sChar.m_cLocation.Y = 38;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -62,7 +64,7 @@ void init( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
-void shutdown( void )
+void shutdown(void)
 {
     // Reset to white text on black background
     colour(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
@@ -83,12 +85,12 @@ void shutdown( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
-void getInput( void )
+void getInput(void)
 {
     // resets all the keyboard events
     memset(g_skKeyEvent, 0, K_COUNT * sizeof(*g_skKeyEvent));
     // then call the console to detect input from user
-    g_Console.readConsoleInput();    
+    g_Console.readConsoleInput();
 }
 
 //--------------------------------------------------------------
@@ -105,7 +107,7 @@ void getInput( void )
 // Output   : void
 //--------------------------------------------------------------
 void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
-{    
+{
     switch (g_eGameState)
     {
     case S_CUTSCENE: gameplayKBHandler(keyboardEvent); //handle gameplay keyboard event
@@ -134,7 +136,7 @@ void keyboardHandler(const KEY_EVENT_RECORD& keyboardEvent)
 // Output   : void
 //--------------------------------------------------------------
 void mouseHandler(const MOUSE_EVENT_RECORD& mouseEvent) //NOTE TO SELF REMOVE THIS, GAME WOULD NOT USE YOUR MOUSE.
-{    
+{
     switch (g_eGameState)
     {
     case S_CUTSCENE: gameplayMouseHandler(mouseEvent);
@@ -167,8 +169,8 @@ void gameplayKBHandler(const KEY_EVENT_RECORD& keyboardEvent)
     case 0x34: key = K_FOUR; break;
     case VK_UP: key = K_UP; break;
     case VK_DOWN: key = K_DOWN; break;
-    case VK_LEFT: key = K_LEFT; break; 
-    case VK_RIGHT: key = K_RIGHT; break; 
+    case VK_LEFT: key = K_LEFT; break;
+    case VK_RIGHT: key = K_RIGHT; break;
     case VK_SPACE: key = K_SPACE; break;
     case VK_ESCAPE: key = K_ESCAPE; break;
     }
@@ -180,7 +182,7 @@ void gameplayKBHandler(const KEY_EVENT_RECORD& keyboardEvent)
     {
         g_skKeyEvent[key].keyDown = keyboardEvent.bKeyDown;
         g_skKeyEvent[key].keyReleased = !keyboardEvent.bKeyDown;
-    }    
+    }
 }
 
 //--------------------------------------------------------------
@@ -222,14 +224,14 @@ void update(double dt)
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
 
-    switch (g_eGameState)   
+    switch (g_eGameState)
     {
-        case S_CUTSCENE: updateCutscene();
-            break;
-        case S_MAP: updateMap(); // game logic for the map
-            break;
-        case S_BATTLE: updateGame(); // gameplay logic when we are in the game
-            break;
+    case S_CUTSCENE: updateCutscene();
+        break;
+    case S_MAP: updateMap(); // game logic for the map
+        break;
+    case S_BATTLE: updateGame(); // gameplay logic when we are in the game
+        break;
     }
 }
 
@@ -241,24 +243,6 @@ void update(double dt)
 //}
 void updateCutscene()
 {
-    //std::string str = "Hello world...test test..";
-    //std::string newstr;
-    //float currentTime; //0.000s
-    //for (size_t i = 0; i < str.size(); ++i)
-    //{
-    //    currentTime = g_dElapsedTime;
-    //    if (g_dElapsedTime > currentTime + 0.5)
-    //    {
-    //        newstr = str[i];
-    //        flavourText.append(newstr);
-    //    }
-    //    else if (g_dElapsedTime > 3.0)
-    //    {
-    //        std::string time = std::to_string(g_dElapsedTime);
-    //        flavourText.append(time);
-    //    }
-    //}
-
     if (g_skKeyEvent[K_SPACE].keyReleased)
     {
         g_eGameState = S_MAP;
@@ -268,18 +252,15 @@ void updateCutscene()
 
 void updateMap()
 {
-    moveCamera();
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
+    collisionDetect();
                        // sound can be played here too.
-    if (g_sChar.m_cLocation.X == 50 && g_sChar.m_cLocation.Y == 10) //if player touches enemy
-    {
-        //Beep(500, 500); //play beep at 500 Frequency for 500 miliseconds
-        PlaySound(TEXT("pokemon.wav"), NULL, SND_FILENAME); //add && SND_SENTRY at the end if want to play simultaneously
-        g_eGameState = S_BATTLE; //changes state of game to BATTLE mode
-    }
+    moveCamera();
 
 }
+
+
 
 void updateGame()       // gameplay logic
 {
@@ -291,13 +272,15 @@ void moveCamera()
     cameraMinX = g_sChar.m_cLocation.X; cameraMinY = g_sChar.m_cLocation.Y;
     if (cameraMinX < 0) cameraMinX = 0;
     if (cameraMinY < 0) cameraMinY = 0;
+    if (cameraMinX > 80) cameraMinX = 80;
+    if (cameraMinY > 30) cameraMinY = 30;
     cameraMaxX = cameraMinX + 120; cameraMaxY = cameraMinY + 40;
     if (cameraMaxX > 200) cameraMaxX = 200;
     if (cameraMaxY > 70) cameraMaxY = 70;
 }
 
 void moveCharacter()
-{    
+{
     // Updating the location of the character based on the key release
     // providing a beep sound whenver we shift the character
     if (g_skKeyEvent[K_UP].keyReleased && g_sChar.m_cLocation.Y > 0)
@@ -308,32 +291,42 @@ void moveCharacter()
     if (g_skKeyEvent[K_LEFT].keyReleased && g_sChar.m_cLocation.X > 0)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;        
+        g_sChar.m_cLocation.X--;
     }
     if (g_skKeyEvent[K_DOWN].keyReleased && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;        
+        g_sChar.m_cLocation.Y++;
     }
     if (g_skKeyEvent[K_RIGHT].keyReleased && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
     {
         //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;        
+        g_sChar.m_cLocation.X++;
     }
 
     if (g_skKeyEvent[K_SPACE].keyReleased)
     {
-        g_sChar.m_bActive = !g_sChar.m_bActive;        
+        g_sChar.m_bActive = !g_sChar.m_bActive;
     }
     map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] = char(1);
-   
+
+}
+
+void collisionDetect()
+{
+    if (g_sChar.m_cLocation.X == consoleEPos.X && g_sChar.m_cLocation.Y == consoleEPos.Y) //if player touches enemy
+    {
+        //Beep(500, 500); //play beep at 500 Frequency for 500 miliseconds
+        PlaySound(TEXT("pokemon.wav"), NULL, SND_FILENAME); //add && SND_SENTRY at the end if want to play simultaneously
+        g_eGameState = S_BATTLE; //changes state of game to BATTLE mode
+    }
 }
 
 void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_skKeyEvent[K_ESCAPE].keyReleased)
-        g_bQuitGame = true;    
+        g_bQuitGame = true;
 }
 
 //--------------------------------------------------------------
@@ -356,8 +349,8 @@ void render()
     case S_BATTLE: renderGame();
         break;
     }
-    renderFramerate();      // renders debug information, frame rate, elapsed time, etc
-    renderInputEvents();    // renders status of input events
+    //renderFramerate();      // renders debug information, frame rate, elapsed time, etc
+   //renderInputEvents();    // renders status of input events
     renderToScreen();       // dump the contents of the buffer to the screen, one frame worth of game
 }
 
@@ -453,7 +446,7 @@ void renderMap()
 {
     renderMapBG();
     renderCharacter();
-    renderEnemy();
+    //renderEnemy();
 }
 
 void renderGame()
@@ -476,7 +469,7 @@ void renderGame()
 void drawBox(int xCoord, int yCoord, int length, int height, WORD color)
 {
     COORD c;
-    for (int i = 0; i < length-1; ++i) //draw top and bottom of box
+    for (int i = 0; i < length - 1; ++i) //draw top and bottom of box
     {
         c.X = xCoord + i + 1;
         c.Y = yCoord;
@@ -491,7 +484,7 @@ void drawBox(int xCoord, int yCoord, int length, int height, WORD color)
             g_Console.writeToBuffer(c, " ", color);
         }
     }
-    for (int j = 0; j < height-1; ++j) //draw two sides of box
+    for (int j = 0; j < height - 1; ++j) //draw two sides of box
     {
         c.X = xCoord;
         c.Y = yCoord + j + 1;
@@ -507,7 +500,7 @@ void drawBox(int xCoord, int yCoord, int length, int height, WORD color)
 void renderBar(int xCoord, int yCoord, int percent, WORD color)
 {
     COORD c;
-    int fill = round(percent/4); //Total length of bars is 25. 100/4 = 25.
+    int fill = round(percent / 4); //Total length of bars is 25. 100/4 = 25.
     c.X = xCoord; c.Y = yCoord;
     g_Console.writeToBuffer(c, "[", color);
     for (int i = 0; i < fill; ++i)
@@ -586,13 +579,13 @@ void renderEnemyASCII()
         break;
 
     case E_SECURITYGUARD:
-        row[0] = "         ________    "; row[1] = "       __\\______/"; 
+        row[0] = "         ________    "; row[1] = "       __\\______/";
         if (guardMood == "happy")
-        { 
-            row[2] = "          [^--^]"; row[3] = "         \\[ v  ]/`"; 
+        {
+            row[2] = "          [^--^]"; row[3] = "         \\[ v  ]/`";
         }
         else
-        { 
+        {
             row[2] = "          [p--p]"; row[3] = "         \\[ ^  ]/`";
         }
         row[4] = "       ,.~~~\\/~~~.,"; row[5] = "     :'    \\  / _  ':"; row[6] = "     ||     \\/  U  ||"; row[7] = "     \\\\            //";
@@ -644,19 +637,20 @@ void renderUI()
     c.X = 5; c.Y = 35;
     g_Console.writeToBuffer(c, "Your HP:", 0x78);
     c.Y += 2; g_Console.writeToBuffer(c, "Enemy Progress:", 0x78);
-}   
+}
 
-/*1. Store maps in array inside switch case 
+/*1. Store maps in array inside switch case
 2. Have CameraMinX + Y & CameraMaxX + Y values. Obtain them by -60 +60 X and -20 +20 Y to player's Pos. BUT if < 0 or >200/70 set to max.
 3. for (int i = CameraMin Y; i < CameraMax Y; ++i) Write to buffer.*/
 void renderMapBG()
 {
-    //WORD colours[9][30]; //IF HAVE TIME, ASSIGN COLOUR TO EVERY ELEMENT AND CALL ARRAY
-    COORD c; c.X = 0; c.Y = 0;
+    COORD enemyPos;
     //FOLLOWING ASSIGNING ARRAY CODES ARE AUTOMATICALLY WRITTEN USING mapToASCII.cpp. For readable maps check out backgrounds.txt. Not efficient without for loops but im lazy ww
     switch (enemy)
     {
     case E_BUSCAPTAIN:
+        enemyPos.X = 168; enemyPos.Y = 26;
+        consoleEPos.X = 88; consoleEPos.Y = 13;
         map[0][0] = char(94); map[0][1] = char(-72); map[0][2] = char(32); map[0][3] = char(32); map[0][4] = char(32); map[0][5] = char(32); map[0][6] = char(32); map[0][7] = char(32); map[0][8] = char(32); map[0][9] = char(32); map[0][10] = char(32); map[0][11] = char(32); map[0][12] = char(32); map[0][13] = char(-43); map[0][14] = char(94); map[0][15] = char(-72); map[0][16] = char(32); map[0][17] = char(32); map[0][18] = char(32); map[0][19] = char(32); map[0][20] = char(32); map[0][21] = char(32); map[0][22] = char(32); map[0][23] = char(32); map[0][24] = char(32); map[0][25] = char(32); map[0][26] = char(32); map[0][27] = char(-43); map[0][28] = char(94); map[0][29] = char(-72); map[0][30] = char(32); map[0][31] = char(32); map[0][32] = char(32); map[0][33] = char(32); map[0][34] = char(32); map[0][35] = char(32); map[0][36] = char(32); map[0][37] = char(32); map[0][38] = char(32); map[0][39] = char(32); map[0][40] = char(32); map[0][41] = char(-43); map[0][42] = char(94); map[0][43] = char(-72); map[0][44] = char(32); map[0][45] = char(32); map[0][46] = char(32); map[0][47] = char(32); map[0][48] = char(32); map[0][49] = char(32); map[0][50] = char(32); map[0][51] = char(32); map[0][52] = char(32); map[0][53] = char(32); map[0][54] = char(32); map[0][55] = char(-43); map[0][56] = char(94); map[0][57] = char(-72); map[0][58] = char(32); map[0][59] = char(32); map[0][60] = char(32); map[0][61] = char(32); map[0][62] = char(32); map[0][63] = char(32); map[0][64] = char(32); map[0][65] = char(32); map[0][66] = char(32); map[0][67] = char(32); map[0][68] = char(32); map[0][69] = char(-43); map[0][70] = char(94); map[0][71] = char(-72); map[0][72] = char(32); map[0][73] = char(32); map[0][74] = char(32); map[0][75] = char(32); map[0][76] = char(32); map[0][77] = char(32); map[0][78] = char(32); map[0][79] = char(32); map[0][80] = char(32); map[0][81] = char(32); map[0][82] = char(32); map[0][83] = char(-43); map[0][84] = char(94); map[0][85] = char(-72); map[0][86] = char(32); map[0][87] = char(32); map[0][88] = char(32); map[0][89] = char(32); map[0][90] = char(32); map[0][91] = char(32); map[0][92] = char(32); map[0][93] = char(32); map[0][94] = char(32); map[0][95] = char(32); map[0][96] = char(32); map[0][97] = char(-43); map[0][98] = char(94); map[0][99] = char(-72); map[0][100] = char(32); map[0][101] = char(32); map[0][102] = char(32); map[0][103] = char(32); map[0][104] = char(32); map[0][105] = char(32); map[0][106] = char(32); map[0][107] = char(32); map[0][108] = char(32); map[0][109] = char(32); map[0][110] = char(32); map[0][111] = char(-43); map[0][112] = char(94); map[0][113] = char(-72); map[0][114] = char(32); map[0][115] = char(32); map[0][116] = char(32); map[0][117] = char(32); map[0][118] = char(32); map[0][119] = char(32); map[0][120] = char(32); map[0][121] = char(32); map[0][122] = char(32); map[0][123] = char(32); map[0][124] = char(32); map[0][125] = char(-43); map[0][126] = char(94); map[0][127] = char(-72); map[0][128] = char(32); map[0][129] = char(32); map[0][130] = char(32); map[0][131] = char(32); map[0][132] = char(32); map[0][133] = char(32); map[0][134] = char(32); map[0][135] = char(32); map[0][136] = char(32); map[0][137] = char(32); map[0][138] = char(32); map[0][139] = char(-43); map[0][140] = char(94); map[0][141] = char(-72); map[0][142] = char(32); map[0][143] = char(32); map[0][144] = char(32); map[0][145] = char(32); map[0][146] = char(32); map[0][147] = char(32); map[0][148] = char(32); map[0][149] = char(32); map[0][150] = char(32); map[0][151] = char(32); map[0][152] = char(32); map[0][153] = char(-43); map[0][154] = char(94); map[0][155] = char(-72); map[0][156] = char(32); map[0][157] = char(32); map[0][158] = char(32); map[0][159] = char(32); map[0][160] = char(32); map[0][161] = char(32); map[0][162] = char(32); map[0][163] = char(32); map[0][164] = char(32); map[0][165] = char(32); map[0][166] = char(32); map[0][167] = char(-43); map[0][168] = char(94); map[0][169] = char(-72); map[0][170] = char(32); map[0][171] = char(32); map[0][172] = char(32); map[0][173] = char(32); map[0][174] = char(32); map[0][175] = char(32); map[0][176] = char(32); map[0][177] = char(32); map[0][178] = char(32); map[0][179] = char(32); map[0][180] = char(32); map[0][181] = char(-43); map[0][182] = char(94); map[0][183] = char(-72); map[0][184] = char(32); map[0][185] = char(32); map[0][186] = char(32); map[0][187] = char(32); map[0][188] = char(32); map[0][189] = char(32); map[0][190] = char(32); map[0][191] = char(32); map[0][192] = char(32); map[0][193] = char(32); map[0][194] = char(32); map[0][195] = char(-43); map[0][196] = char(94); map[0][197] = char(-72); map[0][198] = char(32); map[0][199] = char(32);
         map[1][0] = char(32); map[1][1] = char(92); map[1][2] = char(-47); map[1][3] = char(32); map[1][4] = char(32); map[1][5] = char(32); map[1][6] = char(32); map[1][7] = char(32); map[1][8] = char(32); map[1][9] = char(32); map[1][10] = char(32); map[1][11] = char(32); map[1][12] = char(-47); map[1][13] = char(47); map[1][14] = char(32); map[1][15] = char(92); map[1][16] = char(-47); map[1][17] = char(32); map[1][18] = char(32); map[1][19] = char(32); map[1][20] = char(32); map[1][21] = char(32); map[1][22] = char(32); map[1][23] = char(32); map[1][24] = char(32); map[1][25] = char(32); map[1][26] = char(-47); map[1][27] = char(47); map[1][28] = char(32); map[1][29] = char(92); map[1][30] = char(-47); map[1][31] = char(32); map[1][32] = char(32); map[1][33] = char(32); map[1][34] = char(32); map[1][35] = char(32); map[1][36] = char(32); map[1][37] = char(32); map[1][38] = char(32); map[1][39] = char(32); map[1][40] = char(-47); map[1][41] = char(47); map[1][42] = char(32); map[1][43] = char(92); map[1][44] = char(-47); map[1][45] = char(32); map[1][46] = char(32); map[1][47] = char(32); map[1][48] = char(32); map[1][49] = char(32); map[1][50] = char(32); map[1][51] = char(32); map[1][52] = char(32); map[1][53] = char(32); map[1][54] = char(-47); map[1][55] = char(47); map[1][56] = char(32); map[1][57] = char(92); map[1][58] = char(-47); map[1][59] = char(32); map[1][60] = char(32); map[1][61] = char(32); map[1][62] = char(32); map[1][63] = char(32); map[1][64] = char(32); map[1][65] = char(32); map[1][66] = char(32); map[1][67] = char(32); map[1][68] = char(-47); map[1][69] = char(47); map[1][70] = char(32); map[1][71] = char(92); map[1][72] = char(-47); map[1][73] = char(32); map[1][74] = char(32); map[1][75] = char(32); map[1][76] = char(32); map[1][77] = char(32); map[1][78] = char(32); map[1][79] = char(32); map[1][80] = char(32); map[1][81] = char(32); map[1][82] = char(-47); map[1][83] = char(47); map[1][84] = char(32); map[1][85] = char(92); map[1][86] = char(-47); map[1][87] = char(32); map[1][88] = char(32); map[1][89] = char(32); map[1][90] = char(32); map[1][91] = char(32); map[1][92] = char(32); map[1][93] = char(32); map[1][94] = char(32); map[1][95] = char(32); map[1][96] = char(-47); map[1][97] = char(47); map[1][98] = char(32); map[1][99] = char(92); map[1][100] = char(-47); map[1][101] = char(32); map[1][102] = char(32); map[1][103] = char(32); map[1][104] = char(32); map[1][105] = char(32); map[1][106] = char(32); map[1][107] = char(32); map[1][108] = char(32); map[1][109] = char(32); map[1][110] = char(-47); map[1][111] = char(47); map[1][112] = char(32); map[1][113] = char(92); map[1][114] = char(-47); map[1][115] = char(32); map[1][116] = char(32); map[1][117] = char(32); map[1][118] = char(32); map[1][119] = char(32); map[1][120] = char(32); map[1][121] = char(32); map[1][122] = char(32); map[1][123] = char(32); map[1][124] = char(-47); map[1][125] = char(47); map[1][126] = char(32); map[1][127] = char(92); map[1][128] = char(-47); map[1][129] = char(32); map[1][130] = char(32); map[1][131] = char(32); map[1][132] = char(32); map[1][133] = char(32); map[1][134] = char(32); map[1][135] = char(32); map[1][136] = char(32); map[1][137] = char(32); map[1][138] = char(-47); map[1][139] = char(47); map[1][140] = char(32); map[1][141] = char(92); map[1][142] = char(-47); map[1][143] = char(32); map[1][144] = char(32); map[1][145] = char(32); map[1][146] = char(32); map[1][147] = char(32); map[1][148] = char(32); map[1][149] = char(32); map[1][150] = char(32); map[1][151] = char(32); map[1][152] = char(-47); map[1][153] = char(47); map[1][154] = char(32); map[1][155] = char(92); map[1][156] = char(-47); map[1][157] = char(32); map[1][158] = char(32); map[1][159] = char(32); map[1][160] = char(32); map[1][161] = char(32); map[1][162] = char(32); map[1][163] = char(32); map[1][164] = char(32); map[1][165] = char(32); map[1][166] = char(-47); map[1][167] = char(47); map[1][168] = char(32); map[1][169] = char(92); map[1][170] = char(-47); map[1][171] = char(32); map[1][172] = char(32); map[1][173] = char(32); map[1][174] = char(32); map[1][175] = char(32); map[1][176] = char(32); map[1][177] = char(32); map[1][178] = char(32); map[1][179] = char(32); map[1][180] = char(-47); map[1][181] = char(47); map[1][182] = char(32); map[1][183] = char(92); map[1][184] = char(-47); map[1][185] = char(32); map[1][186] = char(32); map[1][187] = char(32); map[1][188] = char(32); map[1][189] = char(32); map[1][190] = char(32); map[1][191] = char(32); map[1][192] = char(32); map[1][193] = char(32); map[1][194] = char(-47); map[1][195] = char(47); map[1][196] = char(32); map[1][197] = char(92); map[1][198] = char(-47); map[1][199] = char(32);
         map[2][0] = char(32); map[2][1] = char(32); map[2][2] = char(95); map[2][3] = char(-50); map[2][4] = char(32); map[2][5] = char(32); map[2][6] = char(32); map[2][7] = char(32); map[2][8] = char(32); map[2][9] = char(32); map[2][10] = char(46); map[2][11] = char(-50); map[2][12] = char(95); map[2][13] = char(32); map[2][14] = char(32); map[2][15] = char(32); map[2][16] = char(95); map[2][17] = char(-50); map[2][18] = char(46); map[2][19] = char(32); map[2][20] = char(32); map[2][21] = char(32); map[2][22] = char(32); map[2][23] = char(32); map[2][24] = char(46); map[2][25] = char(-50); map[2][26] = char(95); map[2][27] = char(32); map[2][28] = char(32); map[2][29] = char(32); map[2][30] = char(95); map[2][31] = char(-50); map[2][32] = char(46); map[2][33] = char(32); map[2][34] = char(32); map[2][35] = char(32); map[2][36] = char(32); map[2][37] = char(32); map[2][38] = char(46); map[2][39] = char(-50); map[2][40] = char(95); map[2][41] = char(32); map[2][42] = char(32); map[2][43] = char(32); map[2][44] = char(95); map[2][45] = char(-50); map[2][46] = char(46); map[2][47] = char(32); map[2][48] = char(32); map[2][49] = char(32); map[2][50] = char(32); map[2][51] = char(32); map[2][52] = char(46); map[2][53] = char(-50); map[2][54] = char(95); map[2][55] = char(32); map[2][56] = char(32); map[2][57] = char(32); map[2][58] = char(95); map[2][59] = char(-50); map[2][60] = char(46); map[2][61] = char(32); map[2][62] = char(32); map[2][63] = char(32); map[2][64] = char(32); map[2][65] = char(32); map[2][66] = char(46); map[2][67] = char(-50); map[2][68] = char(95); map[2][69] = char(32); map[2][70] = char(32); map[2][71] = char(32); map[2][72] = char(95); map[2][73] = char(-50); map[2][74] = char(46); map[2][75] = char(32); map[2][76] = char(32); map[2][77] = char(32); map[2][78] = char(32); map[2][79] = char(32); map[2][80] = char(46); map[2][81] = char(-50); map[2][82] = char(95); map[2][83] = char(32); map[2][84] = char(32); map[2][85] = char(32); map[2][86] = char(95); map[2][87] = char(-50); map[2][88] = char(46); map[2][89] = char(32); map[2][90] = char(32); map[2][91] = char(32); map[2][92] = char(32); map[2][93] = char(32); map[2][94] = char(46); map[2][95] = char(-50); map[2][96] = char(95); map[2][97] = char(32); map[2][98] = char(32); map[2][99] = char(32); map[2][100] = char(95); map[2][101] = char(-50); map[2][102] = char(46); map[2][103] = char(32); map[2][104] = char(32); map[2][105] = char(32); map[2][106] = char(32); map[2][107] = char(32); map[2][108] = char(46); map[2][109] = char(-50); map[2][110] = char(95); map[2][111] = char(32); map[2][112] = char(32); map[2][113] = char(32); map[2][114] = char(95); map[2][115] = char(-50); map[2][116] = char(46); map[2][117] = char(32); map[2][118] = char(32); map[2][119] = char(32); map[2][120] = char(32); map[2][121] = char(32); map[2][122] = char(46); map[2][123] = char(-50); map[2][124] = char(95); map[2][125] = char(32); map[2][126] = char(32); map[2][127] = char(32); map[2][128] = char(95); map[2][129] = char(-50); map[2][130] = char(46); map[2][131] = char(32); map[2][132] = char(32); map[2][133] = char(32); map[2][134] = char(32); map[2][135] = char(32); map[2][136] = char(46); map[2][137] = char(-50); map[2][138] = char(95); map[2][139] = char(32); map[2][140] = char(32); map[2][141] = char(32); map[2][142] = char(95); map[2][143] = char(-50); map[2][144] = char(46); map[2][145] = char(32); map[2][146] = char(32); map[2][147] = char(32); map[2][148] = char(32); map[2][149] = char(32); map[2][150] = char(46); map[2][151] = char(-50); map[2][152] = char(95); map[2][153] = char(32); map[2][154] = char(32); map[2][155] = char(32); map[2][156] = char(95); map[2][157] = char(-50); map[2][158] = char(46); map[2][159] = char(32); map[2][160] = char(32); map[2][161] = char(32); map[2][162] = char(32); map[2][163] = char(32); map[2][164] = char(46); map[2][165] = char(-50); map[2][166] = char(95); map[2][167] = char(32); map[2][168] = char(32); map[2][169] = char(32); map[2][170] = char(95); map[2][171] = char(-50); map[2][172] = char(46); map[2][173] = char(32); map[2][174] = char(32); map[2][175] = char(32); map[2][176] = char(32); map[2][177] = char(32); map[2][178] = char(46); map[2][179] = char(-50); map[2][180] = char(95); map[2][181] = char(32); map[2][182] = char(32); map[2][183] = char(32); map[2][184] = char(95); map[2][185] = char(-50); map[2][186] = char(46); map[2][187] = char(32); map[2][188] = char(32); map[2][189] = char(32); map[2][190] = char(32); map[2][191] = char(32); map[2][192] = char(46); map[2][193] = char(-50); map[2][194] = char(95); map[2][195] = char(32); map[2][196] = char(32); map[2][197] = char(32); map[2][198] = char(95); map[2][199] = char(-50);
@@ -729,16 +723,26 @@ void renderMapBG()
         map[69][0] = char(-48); map[69][1] = char(-48); map[69][2] = char(-48); map[69][3] = char(-48); map[69][4] = char(-48); map[69][5] = char(-39); map[69][6] = char(32); map[69][7] = char(32); map[69][8] = char(32); map[69][9] = char(32); map[69][10] = char(32); map[69][11] = char(32); map[69][12] = char(-79); map[69][13] = char(-79); map[69][14] = char(-80); map[69][15] = char(-80); map[69][16] = char(-80); map[69][17] = char(-80); map[69][18] = char(-80); map[69][19] = char(-80); map[69][20] = char(-80); map[69][21] = char(-80); map[69][22] = char(-80); map[69][23] = char(-80); map[69][24] = char(-80); map[69][25] = char(-80); map[69][26] = char(-80); map[69][27] = char(-80); map[69][28] = char(-80); map[69][29] = char(-80); map[69][30] = char(-80); map[69][31] = char(-80); map[69][32] = char(-80); map[69][33] = char(-80); map[69][34] = char(-80); map[69][35] = char(-80); map[69][36] = char(-80); map[69][37] = char(-80); map[69][38] = char(-80); map[69][39] = char(-80); map[69][40] = char(-80); map[69][41] = char(-80); map[69][42] = char(-80); map[69][43] = char(-80); map[69][44] = char(-80); map[69][45] = char(-80); map[69][46] = char(-80); map[69][47] = char(-80); map[69][48] = char(-80); map[69][49] = char(-80); map[69][50] = char(32); map[69][51] = char(32); map[69][52] = char(32); map[69][53] = char(32); map[69][54] = char(32); map[69][55] = char(32); map[69][56] = char(32); map[69][57] = char(32); map[69][58] = char(32); map[69][59] = char(32); map[69][60] = char(32); map[69][61] = char(32); map[69][62] = char(32); map[69][63] = char(32); map[69][64] = char(32); map[69][65] = char(32); map[69][66] = char(32); map[69][67] = char(32); map[69][68] = char(32); map[69][69] = char(32); map[69][70] = char(32); map[69][71] = char(32); map[69][72] = char(32); map[69][73] = char(32); map[69][74] = char(32); map[69][75] = char(32); map[69][76] = char(32); map[69][77] = char(32); map[69][78] = char(32); map[69][79] = char(32); map[69][80] = char(32); map[69][81] = char(32); map[69][82] = char(32); map[69][83] = char(32); map[69][84] = char(32); map[69][85] = char(32); map[69][86] = char(32); map[69][87] = char(32); map[69][88] = char(32); map[69][89] = char(32); map[69][90] = char(32); map[69][91] = char(32); map[69][92] = char(32); map[69][93] = char(32); map[69][94] = char(32); map[69][95] = char(32); map[69][96] = char(32); map[69][97] = char(32); map[69][98] = char(32); map[69][99] = char(32); map[69][100] = char(32); map[69][101] = char(32); map[69][102] = char(32); map[69][103] = char(32); map[69][104] = char(32); map[69][105] = char(32); map[69][106] = char(32); map[69][107] = char(32); map[69][108] = char(32); map[69][109] = char(32); map[69][110] = char(32); map[69][111] = char(32); map[69][112] = char(32); map[69][113] = char(32); map[69][114] = char(32); map[69][115] = char(32); map[69][116] = char(32); map[69][117] = char(32); map[69][118] = char(32); map[69][119] = char(32); map[69][120] = char(32); map[69][121] = char(32); map[69][122] = char(32); map[69][123] = char(32); map[69][124] = char(32); map[69][125] = char(32); map[69][126] = char(32); map[69][127] = char(32); map[69][128] = char(32); map[69][129] = char(32); map[69][130] = char(32); map[69][131] = char(32); map[69][132] = char(32); map[69][133] = char(32); map[69][134] = char(32); map[69][135] = char(32); map[69][136] = char(32); map[69][137] = char(32); map[69][138] = char(32); map[69][139] = char(32); map[69][140] = char(32); map[69][141] = char(32); map[69][142] = char(32); map[69][143] = char(32); map[69][144] = char(32); map[69][145] = char(32); map[69][146] = char(32); map[69][147] = char(32); map[69][148] = char(32); map[69][149] = char(32); map[69][150] = char(32); map[69][151] = char(32); map[69][152] = char(32); map[69][153] = char(32); map[69][154] = char(32); map[69][155] = char(32); map[69][156] = char(32); map[69][157] = char(32); map[69][158] = char(32); map[69][159] = char(32); map[69][160] = char(32); map[69][161] = char(32); map[69][162] = char(32); map[69][163] = char(32); map[69][164] = char(32); map[69][165] = char(32); map[69][166] = char(32); map[69][167] = char(32); map[69][168] = char(32); map[69][169] = char(32); map[69][170] = char(32); map[69][171] = char(32); map[69][172] = char(32); map[69][173] = char(32); map[69][174] = char(32); map[69][175] = char(32); map[69][176] = char(32); map[69][177] = char(32); map[69][178] = char(32); map[69][179] = char(32); map[69][180] = char(32); map[69][181] = char(32); map[69][182] = char(32); map[69][183] = char(32); map[69][184] = char(32); map[69][185] = char(32); map[69][186] = char(32); map[69][187] = char(32); map[69][188] = char(32); map[69][189] = char(32); map[69][190] = char(32); map[69][191] = char(32); map[69][192] = char(32); map[69][193] = char(32); map[69][194] = char(32); map[69][195] = char(32); map[69][196] = char(32); map[69][197] = char(32); map[69][198] = char(32); map[69][199] = char(32);
     }
 
-        for (int i = cameraMinY; i < cameraMaxY; ++i)
+    COORD c; c.X = 0; c.Y = 0;
+    for (int i = cameraMinY; i < cameraMaxY; ++i)
+    {
+        for (int j = cameraMinX; j < cameraMaxX; ++j)
         {
-            for (int j = cameraMinX; j < cameraMaxX; ++j)
+            if (i == enemyPos.Y && j == enemyPos.X) //render Enemy in different colour
             {
-                g_Console.writeToBuffer(c, map[i][j], 0x79);
+                g_Console.writeToBuffer(c, char(2), 0x4E);
                 c.X += 1;
-            }   
+            }
+            else
+            {
+                g_Console.writeToBuffer(c, map[i][j], 0x6D);
+                c.X += 1;
+            }
+        }
         c.X = 0;
         c.Y += 1;
-        }
+    }
+    
 }
 
 void renderCharacter()
@@ -746,12 +750,11 @@ void renderCharacter()
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, 0x0A);
 }
 
-void renderEnemy()
-{
-    COORD c; c.X = 50; c.Y = 10;
-    map[c.Y][c.X] = (char)21;
-    g_Console.writeToBuffer(c, (char)21, 0x0C);
-}
+//void renderEnemy()
+//{
+//    COORD c; c.X = 50; c.Y = 10;
+//    g_Console.writeToBuffer(c, (char)21, 0x0C);
+//}
 
 void renderFramerate()
 {
@@ -816,7 +819,7 @@ void inputEvents()
 void renderInputEvents()
 {
     // keyboard events
-    COORD startPos = {50, 2};
+    COORD startPos = { 50, 2 };
     std::ostringstream ss;
     /*std::string key;
     for (int i = 0; i < K_COUNT; ++i)
@@ -874,7 +877,7 @@ void renderInputEvents()
     case DOUBLE_CLICK:
         ss.str("Double Clicked");
         g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 4, ss.str(), 0x59);
-        break;        
+        break;
     case MOUSE_WHEELED:
         if (g_mouseEvent.buttonState & 0xFF000000)
             ss.str("Mouse wheeled down");
@@ -882,8 +885,8 @@ void renderInputEvents()
             ss.str("Mouse wheeled up");
         g_Console.writeToBuffer(g_mouseEvent.mousePosition.X, g_mouseEvent.mousePosition.Y + 5, ss.str(), 0x59);
         break;
-    default:        
+    default:
         break;
     }
-    
+
 }
