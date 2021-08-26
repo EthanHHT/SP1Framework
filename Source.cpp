@@ -10,8 +10,16 @@ using namespace std;
 
 int main(void)
 {
-	movesets deck;
+	/*
+	bool pick_up_GB = false;
+	bool pick_up_MTFDB = false;
+	bool pick_up_baby = false;
+	bool pick_up_phone = false;*/
+
+	int y_or_n = 1; //0 for yes 1 for no
 	Player me;
+	movesets deck;
+	
 	me.sethp();
 	if (me.getmood() == 1) //agitated
 	{
@@ -41,6 +49,63 @@ int main(void)
 	int move_use;
 	
 	//fighting bus captain
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
+
 	B_dmg = -10;
 	C_dmg = 30;
 	I_dmg = 10;
@@ -59,11 +124,6 @@ int main(void)
 
 	while (Bus_captain.getProg() < 100 && me.gethealth() > 0)
 	{
-		//randomize the movesets
-		deck.setmove1();
-		deck.setmove2();
-		deck.setmove3();
-		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the bus captain is : " << Bus_captain.getProg() << '%' << endl;
 
@@ -198,7 +258,7 @@ int main(void)
 		}
 
 		
-		system("CLS");
+		//system("CLS");
 	}
 
 	if (Bus_captain.getProg() >= 100)
@@ -214,6 +274,62 @@ int main(void)
 
 	me.set_dmg_taken(-15);
 	//battling the auntie
+	
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
 	B_dmg = -10;
 	C_dmg = 30;
 	I_dmg = 10;
@@ -232,11 +348,6 @@ int main(void)
 
 	while (Auntie.getProg() < 100 && me.gethealth() > 0)
 	{
-		//randomize the movesets
-		deck.setmove1();
-		deck.setmove2();
-		deck.setmove3();
-		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the auntie is : " << Auntie.getProg() << '%' << endl;
 
@@ -379,7 +490,7 @@ int main(void)
 		}
 
 
-		system("CLS");
+		//system("CLS");
 	}
 
 	if (Auntie.getProg() >= 100)
@@ -395,6 +506,61 @@ int main(void)
 	}
 
 	//battling the colleague
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
 	B_dmg = -10;
 	C_dmg = 10;
 	I_dmg = 30;
@@ -414,11 +580,6 @@ int main(void)
 
 	while (Colleague.getProg() < 100 && me.gethealth() > 0)
 	{
-		//randomize the movesets
-		deck.setmove1();
-		deck.setmove2();
-		deck.setmove3();
-		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Colleague is : " << Colleague.getProg() << '%' << endl;
 
@@ -560,7 +721,7 @@ int main(void)
 		}
 
 
-		system("CLS");
+		//system("CLS");
 	}
 
 	if (Colleague.getProg() >= 100)
@@ -577,6 +738,62 @@ int main(void)
 
 	me.set_dmg_taken(-15);
 	//battling the security guard
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
+	
 	if (SG.getMood() == 1) // angry
 	{
 		B_dmg = 30;
@@ -596,11 +813,6 @@ int main(void)
 		}
 		while (SG.getProg() < 100 && me.gethealth() > 0)
 		{
-			//randomize the movesets
-			deck.setmove1();
-			deck.setmove2();
-			deck.setmove3();
-			deck.setmove4();
 			cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 			cout << "Progress made so far on the Security Guard is : " << SG.getProg() << '%' << endl;
 			cout << "The Security Guard is angry." << endl;
@@ -749,7 +961,7 @@ int main(void)
 			}
 
 
-			system("CLS");
+			//system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -783,11 +995,6 @@ int main(void)
 
 		while (SG.getProg() < 100 && me.gethealth() > 0)
 		{
-			//randomize the movesets
-			deck.setmove1();
-			deck.setmove2();
-			deck.setmove3();
-			deck.setmove4();	
 			cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 			cout << "Progress made so far on the Security Guard is : " << SG.getProg() << '%' << endl;
 			cout << "The Security Guard is happy." << endl;
@@ -923,7 +1130,7 @@ int main(void)
 			}
 
 
-			system("CLS");
+			//system("CLS");
 		}
 
 		if (SG.getProg() >= 100)
@@ -940,16 +1147,65 @@ int main(void)
 
 	me.set_dmg_taken(-15);
 	//battling the cyclist
-	//randomize the movesets
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
 
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
+	
 
 	while (Cyclist.getProg() < 100 && me.gethealth() > 0)
 	{
-		//randomize the movesets
-		deck.setmove1();
-		deck.setmove2();
-		deck.setmove3();
-		deck.setmove4();	
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Cyclist is : " << Cyclist.getProg() << '%' << endl;
 
@@ -1031,7 +1287,7 @@ int main(void)
 		}
 
 
-		system("CLS");
+		//system("CLS");
 	}
 
 	if (Cyclist.getProg() >= 100)
@@ -1046,6 +1302,61 @@ int main(void)
 	
 	me.set_dmg_taken(-15);
 	//battling the boss
+	if (me.getbaby() == false)
+	{
+		cout << "Did you pick up a baby?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setbaby(0);
+		}
+		y_or_n = 0;
+	}
+	if (me.getphone() == false)
+	{
+		cout << "Did you pick up a phone?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setphone(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getGB() == false)
+	{
+		cout << "Did you pick up a bottle of gasoline?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setGB(0);
+		}
+		y_or_n = 0;
+
+	}
+	if (me.getMTFDB() == false)
+	{
+		cout << "Did you pick up a muay thai for dummies book?" << endl;
+		cout << "Enter 0 for yes or 1 for no : ";
+		cin >> y_or_n;
+		cout << endl;
+		if (y_or_n == 0)
+		{
+			me.setMTFDB(0);
+		}
+		y_or_n = 0;
+
+	}
+	deck.setmove1();
+	deck.setmove2();
+	deck.setmove3();
+	deck.setmove4();
 	B_dmg = 10;
 	C_dmg = 10;
 	I_dmg = 10;
@@ -1065,11 +1376,6 @@ int main(void)
 
 	while (Boss.getProg() < 100 && me.gethealth() > 0)
 	{
-		//randomize the movesets
-		deck.setmove1();
-		deck.setmove2();
-		deck.setmove3();
-		deck.setmove4();
 		cout << "Your current progress : " << me.gethealth() << " % to go" << endl;
 		cout << "Progress made so far on the Boss is : " << Boss.getProg() << '%' << endl;
 
@@ -1157,7 +1463,6 @@ int main(void)
 				}
 
 			}
-			system("CLS");
 		}
 
 		if ((Boss.getProg() > 50) && heal_valid == true)

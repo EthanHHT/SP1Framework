@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
+#include "Player.h"
 
 using namespace std;
 
-class movesets
+class movesets:
+	public Player
 {
 private:
 	string deck[20] = { "Molotov Cocktail", "Double Middle Finger", "Fake Punch", "Pepper Spray", "Slap",   //Battle moves
@@ -20,6 +22,7 @@ private:
 	char move4_type;
 	int rand_num;
 	int num_used[4];
+	bool reset;
 
 public:
 	//setters
@@ -31,5 +34,6 @@ public:
 	//getters
 	string getmove(int a);
 	char getmovetype(int a);
+	int getreset();
 };
 

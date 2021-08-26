@@ -7,6 +7,44 @@ void movesets::setmove1()
 	rand_num = rand() % 19 + 1;
 	num_used[0] = rand_num;
 	move1 = deck[rand_num];
+	while (true)
+	{
+		reset = false;
+
+		
+		if ((gasoline_bottle == false && rand_num == 10))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[0] = rand_num;
+			move1 = deck[rand_num];
+		}
+		else if ((muay_thai_for_dummies_book == false && rand_num == 11))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[0] = rand_num;
+			move1 = deck[rand_num];
+		}
+		else if ((phone == false && rand_num == 12))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[0] = rand_num;
+			move1 = deck[rand_num];
+		}
+		else if ((baby == false && rand_num == 13))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[0] = rand_num;
+			move1 = deck[rand_num];
+		}
+		if (reset == false)
+		{
+			break;
+		}
+	}
 
 	if (rand_num < 5)
 	{
@@ -31,13 +69,52 @@ void movesets::setmove2()
 	srand(time(NULL));
 	rand_num = rand() % 19 + 1;
 
-	while (rand_num == num_used[0])
+	while (true)
 	{
-		rand_num = rand() % 19 + 1;
+		reset = false;
+
+		if ((rand_num == num_used[0]))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[1] = rand_num;
+			move2 = deck[rand_num];
+		}
+
+		if ((gasoline_bottle == false && rand_num == 10))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[1] = rand_num;
+			move2 = deck[rand_num];
+		}
+		else if ((muay_thai_for_dummies_book == false && rand_num == 11))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[1] = rand_num;
+			move2 = deck[rand_num];
+		}
+		else if ((phone == false && rand_num == 12))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[1] = rand_num;
+			move2 = deck[rand_num];
+		}
+		else if ((baby == false && rand_num == 13))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[1] = rand_num;
+			move2 = deck[rand_num];
+		}
+		if (reset == false)
+		{
+			break;
+		}
 	}
 
-	num_used[1] = rand_num;
-	move2 = deck[rand_num];
 
 	if (rand_num < 5)
 	{
@@ -62,13 +139,52 @@ void movesets::setmove3()
 	srand(time(NULL));
 	rand_num = rand() % 19 + 1;
 
-	while (rand_num == num_used[0] || rand_num == num_used[1])
+	while (true)
 	{
-		rand_num = rand() % 19 + 1;
+		reset = false;
+
+		if ((rand_num == num_used[0] || rand_num == num_used[1]))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[2] = rand_num;
+			move3 = deck[rand_num];
+		}
+
+		if ((gasoline_bottle == false && rand_num == 10))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[2] = rand_num;
+			move3 = deck[rand_num];
+		}
+		else if ((muay_thai_for_dummies_book == false && rand_num == 11))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[2] = rand_num;
+			move3 = deck[rand_num];
+		}
+		else if ((phone == false && rand_num == 12))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[2] = rand_num;
+			move3 = deck[rand_num];
+		}
+		else if ((baby == false && rand_num == 13))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[2] = rand_num;
+			move3 = deck[rand_num];
+		}
+		if (reset == false)
+		{
+			break;
+		}
 	}
 
-	num_used[2] = rand_num;
-	move3 = deck[rand_num];
 
 	if (rand_num < 5)
 	{
@@ -93,13 +209,52 @@ void movesets::setmove4()
 	srand(time(NULL));
 	rand_num = rand() % 19 + 1;
 
-	while (rand_num == num_used[0] || rand_num == num_used[1] || rand_num == num_used[2])
+	while (true)
 	{
-		rand_num = rand() % 19 + 1;
+		reset = false;
+
+		if ((rand_num == num_used[0] || rand_num == num_used[1] || rand_num == num_used[2]))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[3] = rand_num;
+			move4 = deck[rand_num];
+		}
+
+		if ((gasoline_bottle == false && rand_num == 10))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[3] = rand_num;
+			move4 = deck[rand_num];
+		}
+		else if ((muay_thai_for_dummies_book == false && rand_num == 11))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[3] = rand_num;
+			move4 = deck[rand_num];
+		}
+		else if ((phone == false && rand_num == 12))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[3] = rand_num;
+			move4 = deck[rand_num];
+		}
+		else if ((baby == false && rand_num == 13))
+		{
+			reset = true;
+			rand_num = rand() % 19 + 1;
+			num_used[3] = rand_num;
+			move4 = deck[rand_num];
+		}
+		if (reset == false)
+		{
+			break;
+		}
 	}
 
-	num_used[3] = rand_num;
-	move4 = deck[rand_num];
 
 	if (rand_num < 5)
 	{
@@ -138,6 +293,21 @@ char movesets::getmovetype(int a)
 		return move4_type;
 	}
 	
+}
+
+int movesets::getreset()
+{
+	int h;
+	// 0 for yes 1 for no
+	if (reset == true)
+	{
+		h = 0;
+	}
+	else
+	{
+		h = 1;
+	}
+	return h;
 }
 
 string movesets::getmove(int a)
